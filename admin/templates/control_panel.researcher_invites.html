@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <div class="row content-title">
+            <h1 class="header">Researcher Invites</h1>
+        </div>
+
+        <div class="row">
+            <p>Tokens active for inviting researchers</p>
+        </div>
+
+        <div class="row data-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Survey ID</th>
+                        <th>Survey Name</th>
+                        <th>Admin Email</th>
+                        <th>Created At</th>
+                        <th>Usages</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for token in researcher_tokens %}
+                    <tr>
+                        <th scope="row">{{ token['token'] }}</th>
+                        <td>{{ token['survey_id'] }}</td>
+                        <td>{{ token['pretty_name'] }}</td>
+                        <td>{{ token['admin_email'] }}</td>
+                        <td>{{ token['created_at'] }}</td>
+                        <td>{{ token['usages'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".nav-item li").removeClass("active"); // remove the active class from previously active menu item 
+            $('#nav-link-researcher-invites').addClass('active');
+        });
+    </script>
+{% endblock %}

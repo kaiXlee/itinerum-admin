@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <div class="row content-title">
+            <h1 class="header">User Lookup</h1>
+        </div>
+
+        <div class="row filter">
+            <div class="col-6">
+                <label for="survey-select">Survey</label>
+                <select class="form-control filter-select" size="6" name="survey-select" id="survey-select">
+                    <option value="-1" selected>Any</option>
+                    {% for s in surveys %}
+                        <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>                   
+        </div>
+
+        <div class="row search">
+            <div class="col-12">
+                <form action="">
+                    <div class="input-group search-input">
+                        <input type="text" name="search" id="uuid-or-email" placeholder="Search uuid or email" class="form-control">
+                        <span class="input-group-btn">
+                            <input type="submit" name="commit" value="Search" class="btn btn-primary" data-disable-with="Search">
+                        </span> 
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row data-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>UUID</th>
+                        <th>Email</th>
+                        <th>Survey Name</th>
+                        <th>Survey Language</th>
+                        <th>Signed Up</th>
+                        <th>Admin Email</th>
+                        <th>Last Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            {% if users %}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+
+        <div class="pagination-bar d-flex">
+            <ul class="pagination mx-auto">
+                <li class="page-item">
+                    <a class="page-link" value="1">1</a>
+                </li>
+            </ul>
+        </div>        
+    </div>
+
+    <script type="text/javascript">
+        function submitSearchForm(pageNum) {
+            var searchUrl = window.location.href,
+                params = { 
+                    uuidOrEmail: $('#uuid-or-email').val(),
+                    surveyName: $('#survey-select').val(),
+                    pageNum
+                };
+
+            $.post(searchUrl, params, function(data, textStatus, jqXHR) {
+               // create user html rows
+                var rows = [];
+                data.users.forEach(function(user) {
+                    rows.push([
+                        '<tr>',
+                            '<th>' + user.id + '</th>',
+                            '<td>' + user.uuid + '</td>',
+                            '<td>' + user.email + '</td>',
+                            '<td>' + user.survey + '</td>',
+                            '<td>' + user.survey_language + '</td>',
+                            '<td>' + user.created_at + '</td>',
+                            '<td>' + user.survey_administrator + '</td>',
+                            '<td>' + user.last_coordinate + '</td>',
+                        '</tr>'
+                    ].join(''));
+                });
+                // add rows to table element
+                $('table tbody tr').remove();
+                $('table').find('tbody').append(...rows);
+
+                // populate the pagination bar
+                paginate(data.pages);                
+            });
+        }
+
+        function* range(start, end) {
+            for (var i = start; i <= end; i++) {
+                yield i;
+            }
+        }
+
+        function paginate(pages) {
+            var page_links = [],
+                max_links = 10;
+            for (var i of range(1, pages)) {
+                if (i <= 10) {
+                    page_links.push([
+                        '<li class="page-item">',
+                            '<a class="page-link" value="' + i + '">' + i + '</a>',
+                        '</li>'
+                    ].join(''));
+                } else {
+                    if (i < 10) {
+                        page_links.push([
+                            '<li class="page-item">',
+                                '<a class="page-link" value="' + i + '">' + i + '</a>',
+                            '</li>'
+                        ].join(''));
+                    } else if (i === 10) {
+                        page_links.push([
+                            '<li class="page-item">',
+                                '<a class="page-link" disabled>...</a>',
+                            '</li>'
+                        ].join(''));
+                    }
+                }
+            }
+
+            $('.pagination li').remove();
+            $('.pagination').append(...page_links);
+            
+            // attach callback to load new search results on pagination click
+            $('.page-item').click(function(e) {
+                var pageNum = $(e.target).attr('value');
+                submitSearchForm(pageNum);
+            });            
+        }
+
+        $(document).ready(function() {
+            $(".nav-item li").removeClass("active"); // remove the active class from previously active menu item 
+            $('#nav-link-user-lookup').addClass('active');
+
+            $("form").bind("keyup", function(e) {
+                if (e.keyCode === 13) return false;
+                submitSearchForm();
+            });
+
+            $('#search-button').click(() => submitSearchForm(1));
+            $('#survey-select').change(() => submitSearchForm(1));
+
+            submitSearchForm();
+        });
+    </script> 
+{% endblock %}

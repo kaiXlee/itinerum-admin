@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <div class="row content-title">
+            <h1 class="header">Account Recovery</h1>
+        </div>
+
+        <div class="row">
+            <p>Active or latest recently active reset token in each survey for user password recovery</p>
+        </div>
+
+        <div class="row search">
+            <div class="col-12">
+                <form action="">
+                    <div class="input-group search-input">
+                        <input type="text" name="search" id="email" placeholder="Search email" class="form-control">
+                        <span class="input-group-btn">
+                            <input type="submit" name="commit" value="Search" class="btn btn-primary" data-disable-with="Search">
+                        </span> 
+                    </div>
+                </form>
+            </div>
+        </div>        
+
+        <div class="row data-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Token ID</th>
+                        <th>Survey name</th>
+                        <th>Email</th>
+                        <th>Token</th>
+                        <th>Time used</th>
+                        <th>Deactivate token</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination-bar d-flex">
+            <ul class="pagination mx-auto">
+                <li class="page-item">
+                    <a class="page-link" value="1">1</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function deactivateToken(e) {
+            var tokenRow = $(e.target).parents('tr'),
+                tokenId = $(tokenRow).find('[data-col="id"]').text(),
+                deactivateUrl = window.location.href + '/deactivate',
+                params = { tokenId };
+            
+            $.post(deactivateUrl, params, function(data, textStatus, jqXHR) {
+                // remove the deactivate button
+                $(tokenRow).find('[data-col="deactivate_button"]').remove();
+            });
+        }
+
+        function submitSearchForm(pageNum) {
+            var pageNum = pageNum !== undefined ? pageNum : 1;
+
+            var searchUrl = window.location.href,
+                params = {
+                    email: $('#email').val(),
+                    pageNum
+                };
+
+            $.post(searchUrl, params, function(data, textStatus, jqXHR) {
+                var rows = [];
+
+                data.latest_tokens.forEach(function(token) {
+                    var deactivateButton = '';
+                    if (!token.used_at) {
+                        deactivateButton = [
+                            '<button class="btn btn-danger deactivate-btn">',
+                                'X',
+                            '</button>'
+                        ].join('');
+                    }
+
+                    var used_at = token.used_at ? token.used_at : 'Unused';
+                    rows.push([
+                        '<tr>',
+                            '<th data-col="id">' + token.id + '</th>',
+                            '<td data-col="pretty_name">' + token.pretty_name + '</td>',
+                            '<td data-col="email">' + token.email + '</td>',
+                            '<td data-col="token">' + token.token + '</td>',
+                            '<td data-col="used_at">' + used_at + '</td>',
+                            '<td data-col="deactivate_button">' + deactivateButton + '</td>',
+                        '</tr>'
+                    ].join(''));
+                });
+                // add rows to table element
+                $('table tbody tr').remove();
+                $('table').find('tbody').append(...rows);
+                
+                // attach deactivate reset token handler
+                $('.deactivate-btn').click(deactivateToken);
+
+                // populate the pagination bar
+                paginate(data.pages);
+            });
+        }
+
+        function* range(start, end) {
+            for (var i = start; i <= end; i++) {
+                yield i;
+            }
+        }
+
+        function paginate(pages) {
+            var page_links = [],
+                max_links = 10;
+            for (var i of range(1, pages)) {
+                if (i <= 10) {
+                    page_links.push([
+                        '<li class="page-item">',
+                            '<a class="page-link" value="' + i + '">' + i + '</a>',
+                        '</li>'
+                    ].join(''));
+                } else {
+                    if (i < 10) {
+                        page_links.push([
+                            '<li class="page-item">',
+                                '<a class="page-link" value="' + i + '">' + i + '</a>',
+                            '</li>'
+                        ].join(''));
+                    } else if (i === 10) {
+                        page_links.push([
+                            '<li class="page-item">',
+                                '<a class="page-link" disabled>...</a>',
+                            '</li>'
+                        ].join(''));
+                    }
+                }
+            }
+
+            $('.pagination li').remove();
+            $('.pagination').append(...page_links);
+
+            // attach callback to load new search results on pagination click
+            $('.page-item').click(function(e) {
+                var pageNum = $(e.target).attr('value');
+                submitSearchForm(pageNum);
+            });
+        }
+
+        $(document).ready(function () {
+            // remove the active class from previously active menu item
+            // and set for the current page
+            $(".nav-item li").removeClass("active");
+            $("#nav-link-account-recovery").addClass("active");
+
+            // attach search input handlers
+            $("form").bind("keyup", function(e) {
+                if (e.keyCode === 13) return false;
+                submitSearchForm();
+            });
+            $('#search-button').click(submitSearchForm);
+            submitSearchForm();
+        });
+    </script>
+{% endblock %}

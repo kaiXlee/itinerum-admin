@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <div class="row content-title">
+            <h1 class="header">New Survey</h1>
+        </div>
+
+        <div class="row">
+            <p>Token management for inviting new survey teams</p>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" id="deploy-schema-modal-btn" data-toggle="modal" data-target="#survey-schema-modal">Deploy Survey Schema</button>
+                <button class="btn btn-success float-sm-right" id="new-token-btn">New Token</button>
+            </div>
+        </div>
+
+        <div class="row data-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Token Hash</th>
+                        <th>Created At</th>
+                        <th>Active</th>
+                        <th>Usages</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    {% for token in new_survey_tokens %}
+                        <tr>
+                            <th scope="row">{{ token.token }}</th>
+                            <td>{{ token.created_at.replace(microsecond=0) }}</td>
+                            <td>{{ token.active }}</td>
+                            <td>{{ token.usages }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>    
+
+    <!-- Upload JSON schema modal -->
+    <div class="modal fade" id="survey-schema-modal" tabindex="-1" role="dialog" aria-labelledby="survey-schema-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="survey-schema-modal-label">Upload JSON Schema</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        <div class="survey-name-row">
+                            <label for="json-schema-survey-name">New Survey Name</label>
+                            <input type="text" id="json-schema-survey-name" class="form-control" />
+                            <div class="form-control-feedback" id="json-schema-survey-name-feedback"></div>
+                        </div>
+
+                        <p id="json-schema-help" class="form-text text-muted">
+                            Upload JSON schema to append to default hardcoded questions:
+                        </p>
+                        <label class="custom-file json-schema-file">
+                            <input type="file" id="json-schema-file-input" class="custom-file-input" />
+                            <span class="custom-file-control custom-file-name" id="json-schema-file-name" data-content="Upload schema..."></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="deploy-schema-btn">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // remove the active class from previously active menu item 
+            $('.nav-item li').removeClass('active');
+            $('#nav-link-survey-registration').addClass('active');
+
+            // schema modal: change input filepath name from file
+            $('#json-schema-file-input').change(function(e) {
+                var fileName = e.target.value.split('\\').pop();
+                $('#json-schema-file-name').attr('data-content', fileName);
+            });
+
+            // schema modal: deploy survey schema to new survey
+            $('#deploy-schema-btn').click(function() {
+                var readSuccess = function(content) {
+                    var jsonContent = JSON.stringify({
+                        schema: JSON.parse(content),
+                        surveyName: $('#json-schema-survey-name').val()
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ url_for('.upload_survey_schema_json') }}",
+                        contentType: 'application/json',
+                        data: jsonContent,
+                        dataType: 'json',
+                        success: function(data) {
+                            $('#survey-schema-modal').modal('toggle');
+                        },
+                        error: function(err) {
+                            $('.survey-name-row').addClass('has-danger');
+                            $('#json-schema-survey-name').addClass('form-control-success');
+                            $('#json-schema-survey-name-feedback').text(err.responseJSON.errors[0]);
+                        }
+                    });
+                }
+
+                var fileReader = new FileReader();
+                var files = $('#json-schema-file-input').get(0).files;
+                fileReader.onload = function(e) { readSuccess(e.target.result) };
+                fileReader.readAsText(files[0]);
+            });
+
+            // register new token click
+            var $table = $('#table-body');
+            $('#new-token-btn').click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('.generate_new_survey_token') }}",
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(data) {
+                        $('#table-body').empty();
+                        data.results.recent_tokens.forEach(function(token, idx) {
+                            var $row = $('<tr>').append(
+                                $('<th>').text(token.token),
+                                $('<td>').text(token.created_at),
+                                $('<td>').text(token.active),
+                                $('<td>').text(token.usages)
+                            );
+                            $row.appendTo($table);
+                        });
+                    }
+                });                
+            });
+        });
+    </script>
+{% endblock %}

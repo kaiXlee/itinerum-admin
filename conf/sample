@@ -1,0 +1,6 @@
+CONFIG=debug
+IT_ADMIN_PORT=9002
+IT_SECRET_KEY=changeme
+IT_POSTGRES_URI=postgresql://username:password@host:5432/itinerum_dev
+IT_ADMIN_USER=admin
+IT_ADMIN_PASSWORD=admin

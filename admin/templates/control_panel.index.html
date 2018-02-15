@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <div class="row content-title">
+            <h1 class="header">Overview</h1>
+        </div>
+
+        <div class="row">
+            <p>Lists the number of active tokens</p>
+        </div>
+
+        <div class="row data-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th># issued</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">New Survey</th>
+                        <td><a href="{{ url_for('.new_survey_panel') }}">{{ new_survey }}</a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Researcher Invites</th>
+                        <td><a href="{{ url_for('.researcher_invites_panel') }}">{{ researcher_invite }}</a></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Account Recovery</th>
+                        <td><a href="{{ url_for('.account_recovery_panel') }}">{{ password_reset }}</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row export-summary">
+            <h4>Export daily .csv summary</h4>
+            <div class="col-12 text-center">
+                <select class="custom-select export-survey-name">
+                    {% for name in surveys %}
+                    <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+
+                <button class="btn btn-primary export-summary-button">
+                    Export
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function exportCSVSummary(surveyName) {
+            var csvUrl = location.pathname + 'export?survey=' + surveyName;
+            location.replace(csvUrl);
+        }
+
+        $(document).ready(function () {
+            $(".nav-item li").removeClass("active"); // remove the active class from previously active menu item 
+            $('#nav-link-overview').addClass('active');
+
+            // attach .csv export listeners
+            $('.export-summary-button').click(function() {
+                var surveyName = $('.export-survey-name').val();
+                exportCSVSummary(surveyName);
+            });
+        });
+    </script> 
+{% endblock %}

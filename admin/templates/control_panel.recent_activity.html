@@ -1,0 +1,216 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <!--
+        <div class="row">
+            <div class="col-4 bbox-type-select">
+                <label for="bbox-type-select">Survey</label>
+                <select class="form-control" name="bbox-type-select">
+                    <option value="inclusive">Inclusive</option>
+                    <option value="exclusive">Exclusive</option>
+                </select>
+            </div>
+        </div>
+        -->
+
+        <div class="row">
+            <div class="col-6">
+                <button class="btn btn-secondary activity-map-button" id="reset-map">
+                    Reset Map
+                </button>
+            </div>
+
+            <div class="col-6">
+                <button class="btn btn-primary activity-map-button float-right" id="export-user" disabled>
+                    Export User
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div id="mapid"></div>
+            </div>
+        </div>
+
+        <div class="row data-table activity-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>UUID</th>
+                        <th>Survey ID</th>
+                        <th>Survey Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <style>
+        body {
+            background-color: rgb(194, 194, 194);
+        }
+
+        #mapid { 
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.3/leaflet.js" integrity="sha256-GXUdrV9FHGDyzoSGD3O+jR3eYZaZZsjbsMvFhK3C0qg=" crossorigin="anonymous"></script>    
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.10/leaflet.draw.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/colorMapper.js') }}"></script>
+    <script type="text/javascript">
+        var LAYER_GROUP = new L.LayerGroup(),
+            DISPLAYED_MOBILE_ID,
+            ALL_POINTS_LAYER_CACHE;
+
+        function loadRecentActivity(map) {
+            var mapDataUrl = window.location.href + '/data',
+                params = {};
+
+            $.post(mapDataUrl, params, function(geojson, textStatus, jqXHR) {
+                var idx = 0,
+                    colors = {
+                        newest: '#FFEB51',
+                        oldest: '#4EC4F5'
+                    },
+                    steps = 3,
+                    colorMap = generateColorMap(colors, steps,
+                                                geojson.properties.start,
+                                                geojson.properties.end)
+                    geojsonMarkerOptions = {
+                        radius: 1,
+                        color: "#000",
+                        weight: 4,
+                        opacity: 0,
+                        fillOpacity: 1
+                    };
+
+                LAYER_GROUP.clearLayers();
+                var layer = L.geoJSON(geojson, {
+                    pointToLayer: function(feature, latlng) {
+                        // get marker properties from linked lists index
+                        var ts = geojson.properties.timestamps[idx],
+                            mobileId = feature.properties.mobile_ids[idx];
+
+                        geojsonMarkerOptions.fillColor = getColor(colorMap, ts);
+
+                        var marker = L.circleMarker(latlng, geojsonMarkerOptions);
+                        marker.markerIndex = idx;
+                        marker.mobileId = mobileId;
+                        marker.timestamp = ts;
+
+                        $(marker).click(function(e) {
+                            loadMobileIdActivity(map, e.target.mobileId);
+                        });
+
+                        idx += 1;
+                        return marker;
+                    }
+                });
+                ALL_POINTS_LAYER_CACHE = layer;
+                LAYER_GROUP.addLayer(layer);
+
+                map.fitBounds(layer.getBounds());
+            });
+        }
+
+        function loadMobileIdActivity(map, mobileId) {
+            var uuidDataUrl = window.location.href + '/data/' + mobileId,
+                params = {};
+
+            $.post(uuidDataUrl, params, function(geojson, textStatus, jqXHR) {
+                var idx = 0,
+                    colors = {
+                        newest: '#FFFBAC',
+                        oldest: '#103D69'
+                    },
+                    steps = 25,
+                    colorMap = generateColorMap(colors, steps,
+                                                geojson.properties.start,
+                                                geojson.properties.end),
+                    geojsonMarkerOptions = {
+                        radius: 2,
+                        color: "#000",
+                        weight: 0,
+                        opacity: 0,
+                        fillOpacity: 1
+                    };
+
+                
+                LAYER_GROUP.clearLayers();
+                var layer = L.geoJSON(geojson, {
+                    pointToLayer: function(feature, latlng) {
+                        var ts = geojson.properties.timestamps[idx];
+                        geojsonMarkerOptions.fillColor = getColor(colorMap, ts);
+                        var marker = L.circleMarker(latlng, geojsonMarkerOptions);
+                        idx += 1;
+                        return marker;
+                    }
+                });
+                LAYER_GROUP.addLayer(layer);
+                map.fitBounds(layer.getBounds());
+
+                // populate data table
+                // create user html rows
+                var rows = [[
+                    '<tr>',
+                        '<td>' + geojson.properties.uuid + '</td>',
+                        '<td>' + geojson.properties.survey_id + '</td>',
+                        '<td>' + geojson.properties.survey_name + '</td>',
+                        '<td>' + geojson.properties.email + '</td>',
+                    '</tr>'
+                ].join('')];
+                // add rows to table element
+                $('table tbody tr').remove();
+                $('table').find('tbody').append(...rows);
+
+                // enable user data download button
+                $('#export-user').prop('disabled', false);
+                DISPLAYED_MOBILE_ID = mobileId;
+            });
+        }
+
+        function resetFromCache(map) {
+            var layer = ALL_POINTS_LAYER_CACHE;
+            LAYER_GROUP.clearLayers();
+            LAYER_GROUP.addLayer(layer);
+            map.fitBounds(layer.getBounds());
+            $('#export-user').prop('disabled', true);
+            DISPLAYED_MOBILE_ID = undefined;
+        }
+
+        function exportMobileUserData() {
+            var geojsonUrl = location.pathname + '/export?mobileuser=' + DISPLAYED_MOBILE_ID;
+            location.replace(geojsonUrl);
+        }
+
+        $(document).ready(function () {
+            // remove the active class from previously active menu item
+            // and set for the current page
+            $(".nav-item li").removeClass("active");
+            $("#nav-link-recent-activity").addClass("active");
+
+            // initialize leaflet
+            var map = new L.map('mapid').setView([45.55, -73.7], 5);
+            LAYER_GROUP.addTo(map);
+
+            // add basemap
+            L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png', {
+                attribution: '',
+                maxZoom: 18,
+            }).addTo(map);
+
+            // load activity data
+            loadRecentActivity(map);
+
+            $('#reset-map').click(() => resetFromCache(map));
+            $('#export-user').click(() => exportMobileUserData());
+        });
+    </script>
+{% endblock %}
