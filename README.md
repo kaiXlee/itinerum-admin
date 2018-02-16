@@ -1,6 +1,6 @@
 # itinerum-admin
 
-[![PyPI](https://img.shields.io/badge/Python-2.7-blue.svg?style=flat-square)]()
+[![Python Version](https://img.shields.io/badge/Python-2.7-blue.svg?style=flat-square)]()
 
 
 This repository contains the Flask application for the Itinerum admin portal and accompanying Dockerfile. It is a survey management panel for the [Itinerum travel survey platform](https://itinerum.ca/).
