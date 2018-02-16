@@ -103,3 +103,6 @@ ENV/
 # Itinerum - exclude all confs except the default sample
 conf/*
 !conf/sample
+
+# Itinerum - ingore development migrations (disable on deployment forks)
+migrations/
