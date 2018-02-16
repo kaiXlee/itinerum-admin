@@ -1,0 +1,70 @@
+image: docker:latest
+
+variables:
+  DOCKER_DRIVER: overlay2
+  PIP_CACHE_DIR: $CI_PROJECT_DIR/pip-cache
+  ECR_NAMESPACE: itinerum-alb
+  ECR_IMAGE_TAG: itinerum-admin
+
+building:
+  stage: build
+  script:
+    - docker build -t $ECR_IMAGE_TAG:latest .
+  tags:
+    - amd64
+  only:
+    - testing
+    - staging
+
+push-to-testing:
+  stage: testing
+  cache:
+    paths:
+      - $PIP_CACHE_DIR
+    key: itinerum-test-deploy
+  before_script:
+    - apk add git openssh python py-pip --no-cache
+    - pip install boto3==1.4.8 docker==2.6.1
+    - eval $(ssh-agent -s)
+    - echo -e "$DOCKER_SSH_PRIVATE_KEY" > privkey
+    - chmod 600 privkey
+    - ssh-add privkey
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - git clone git@gitlab.com:itinerum/itinerum-deploy.git
+  script:
+    - cd ./itinerum-deploy/aws/2-alb-ecs/
+    - python push_to_ecr.py $ECR_NAMESPACE-testing $ECR_IMAGE_TAG $CI_PIPELINE_ID
+  tags:
+    - amd64
+  only:
+    - testing
+
+push-to-production:
+  stage: production
+  cache:
+    paths:
+      - $PIP_CACHE_DIR
+    key: itinerum-deploy
+  before_script:
+    - apk add git openssh python py-pip --no-cache
+    - pip install boto3==1.4.8 docker==2.6.1
+    - eval $(ssh-agent -s)
+    - echo -e "$DOCKER_SSH_PRIVATE_KEY" > privkey
+    - chmod 600 privkey
+    - ssh-add privkey
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - git clone git@gitlab.com:itinerum/itinerum-deploy.git
+  script:
+    - cd ./itinerum-deploy/aws/2-alb-ecs/
+    - python push_to_ecr.py $ECR_NAMESPACE $ECR_IMAGE_TAG $CI_PIPELINE_ID
+  tags:
+    - amd64
+  only:
+    - production
+
+stages:
+  - build
+  - testing
+  - production
