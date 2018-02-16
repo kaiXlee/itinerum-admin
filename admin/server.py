@@ -8,7 +8,7 @@ import logging
 from raven.contrib.flask import Sentry
 import os
 
-from admin.blueprints import control_panel
+from admin.blueprints import control_panel, manage_surveys
 import config
 from models import db, user_datastore
 
@@ -56,6 +56,7 @@ def create_app(testing=False):
 
     # Register admin dashboard blueprint =======================================
     app.register_blueprint(control_panel.blueprint)
+    app.register_blueprint(manage_surveys.blueprint, url_prefix='/manage-surveys')
 
     # Register health check route for load balancer ============================
     @app.route('/health')

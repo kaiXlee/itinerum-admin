@@ -6,7 +6,6 @@ import csv
 from datetime import date, datetime, timedelta
 from flask import (Blueprint, current_app, jsonify, make_response,
                    render_template, request, Response)
-from functools import wraps
 import io
 import json
 import os
@@ -14,38 +13,18 @@ import pytz
 import time
 
 from admin.database import Database
+from utils.basic_auth import requires_auth
 from utils.responses import Success, Error
+
 
 blueprint = Blueprint('control_panel', __name__)
 database = Database()
 server_tz = pytz.timezone('America/Montreal')
 
 
-### THIS SHOULD BE CHANGED TO A MORE ROBUST SYSTEM
-# Left as-is for time being as panel intended for single-user
-# server adminstrator
-def check_auth(username, password):
-    return username == current_app.config['ADMIN_USER'] and \
-           password == current_app.config['ADMIN_PASSWORD']
-
-
-# HTTP Basic Auth decorator
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.authorization
-        if not auth or not check_auth(auth.username, auth.password):
-            message = ('Could not verify your access level for that URL.\n'
-                       'You have to login with proper credentials.')
-            headers = {'WWW-Authenticate': 'Basic realm="Login Required"'}
-            return Response(message, 401, headers)
-        return f(*args, **kwargs)
-    return decorated
-
-
 @blueprint.route('/')
 @requires_auth
-def home():
+def index():
     page_data = {
         'title': 'Overview - Itinerum Control Panel',
         'surveys': database.survey_admin.names()
@@ -97,71 +76,6 @@ def export_csv():
                         headers=headers)
     response.content_type = 'text/csv'
     return response
-
-
-@blueprint.route('/new-survey')
-@requires_auth
-def new_survey_panel():
-    page_data = {
-        'title': 'New Survey Tokens - Itinerum Control Panel',
-        'new_survey_tokens': database.token.new_survey.get_recent(10)
-    }
-    return render_template('control_panel.new_survey.html', **page_data)
-
-
-@blueprint.route('/new-survey/schema', methods=['POST'])
-@requires_auth
-def upload_survey_schema_json():
-    if not request.json.get('surveyName'):
-        return Error(status_code=400,
-                     headers={'Location': '/new-survey/schema'},
-                     resource_type='NewSurveySchema',
-                     errors=['A unique survey name must be provided.'])
-    errors = None
-    if request.json.get('schema'):
-        error = database.survey_admin.create_from_schema(survey_name=request.json['surveyName'],
-                                                         admin_email=request.json['schema']['adminEmail'],
-                                                         admin_password=request.json['schema']['adminPassword'],
-                                                         language=request.json['schema']['language'],
-                                                         survey_questions=request.json['schema']['surveyQuestions'],
-                                                         survey_prompts=request.json['schema']['surveyPrompts'])
-        if not error:
-            return Success(status_code=201,
-                           headers={'Location': '/new-survey/schema'},
-                           resource_type='NewSurveySchema',
-                           body={})
-        errors = [error]
-
-    if not errors:
-        errors = ['New survey schema could not be uploaded.']
-    return Error(status_code=400,
-                 headers={'Location': '/new-survey/schema'},
-                 resource_type='NewSurveySchema',
-                 errors=errors)
-
-
-@blueprint.route('/new-survey/token', methods=['POST'])
-@requires_auth
-def generate_new_survey_token():
-    database.token.new_survey.create()
-    response = {
-        'recent_tokens': [],
-        'message': 'New survey sign-up token successfully created.'
-    }
-
-    # format the same as jinja2 renders the template
-    for token in database.token.new_survey.get_recent(10):
-        response['recent_tokens'].append({
-            'token': token.token,
-            'created_at': token.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            'active': str(token.active),
-            'usages': token.usages
-        })
-
-    return Success(status_code=201,
-                   headers={'Location': '/new-survey/token'},
-                   resource_type='NewSurveyToken',
-                   body=response)
 
 
 @blueprint.route('/researcher-invites')
