@@ -7,7 +7,6 @@ from admin.database import Database
 from utils.basic_auth import requires_auth
 from utils.responses import Success, Error
 
-
 blueprint = Blueprint('manage_surveys', __name__)
 database = Database()
 

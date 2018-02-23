@@ -8,7 +8,9 @@ import logging
 from raven.contrib.flask import Sentry
 import os
 
-from admin.blueprints import account_recovery, control_panel, manage_surveys, signup_tokens, user_lookup
+from admin.blueprints import (account_recovery, control_panel, manage_surveys, 
+                              recent_activity, researcher_tokens, signup_tokens,
+                              user_lookup)
 import config
 from models import db, user_datastore
 
@@ -58,6 +60,8 @@ def create_app(testing=False):
     app.register_blueprint(control_panel.blueprint)
     app.register_blueprint(account_recovery.blueprint, url_prefix='/account-recovery')
     app.register_blueprint(manage_surveys.blueprint, url_prefix='/manage-surveys')
+    app.register_blueprint(recent_activity.blueprint, url_prefix='/recent-activity')
+    app.register_blueprint(researcher_tokens.blueprint, url_prefix='/researcher-tokens')
     app.register_blueprint(signup_tokens.blueprint, url_prefix='/signup-tokens')
     app.register_blueprint(user_lookup.blueprint, url_prefix='/user-lookup')
 

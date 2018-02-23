@@ -37,7 +37,7 @@ def generate_new_survey_token():
     for token in database.token.new_survey.get_recent(10):
         response['recent_tokens'].append({
             'token': token.token,
-            'created_at': token.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'created_at': token.created_at,
             'active': str(token.active),
             'usages': token.usages
         })

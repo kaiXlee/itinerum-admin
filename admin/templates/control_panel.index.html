@@ -25,11 +25,11 @@
                     </tr>
                     <tr>
                         <th scope="row">Researcher Invites</th>
-                        <td><a href="{{ url_for('.researcher_invites_panel') }}">{{ researcher_invite }}</a></td>
+                        <td><a href="{{ url_for('researcher_tokens.index') }}">{{ researcher_invite }}</a></td>
                     </tr>
                     <tr>
                         <th scope="row">Account Recovery</th>
-                        <td><a href="{{ url_for('.account_recovery_panel') }}">{{ password_reset }}</a></td>
+                        <td><a href="{{ url_for('account_recovery.index') }}">{{ password_reset }}</a></td>
                     </tr>
                 </tbody>
             </table>
