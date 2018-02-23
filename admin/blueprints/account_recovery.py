@@ -14,7 +14,7 @@ database = Database()
 
 @blueprint.route('/', methods=['GET', 'POST'])
 @requires_auth
-def account_recovery_panel():
+def index():
     if request.method == 'GET':
         response = {'title': 'Account Recovery Tokens - Itinerum Control Panel'}
         return render_template('account_recovery.index.html', **response)

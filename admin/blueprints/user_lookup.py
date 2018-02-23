@@ -13,7 +13,7 @@ database = Database()
 
 @blueprint.route('/', methods=['GET', 'POST'])
 @requires_auth
-def user_lookup_panel():
+def index():
     if request.method == 'GET':
         response = {
             'title': 'User Lookup - Itinerum Control Panel',
