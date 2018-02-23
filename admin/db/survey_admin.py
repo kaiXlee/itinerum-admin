@@ -14,6 +14,9 @@ class SurveyAdminActions:
     def names(self):
         return [n for n, in Survey.query.with_entities(Survey.pretty_name).order_by(Survey.name).all()]
 
+    def paginate_registrations(self):
+        pass
+
     def get_user_role(self, role):
         return user_datastore.find_or_create_role(name=role)
 

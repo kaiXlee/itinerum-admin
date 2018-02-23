@@ -16,14 +16,10 @@ database = Database()
 @requires_auth
 def index():
     page = int(request.args.get('page', 1))
-    pagination_data = database.token.new_survey.paginate(page=page, per_page=10)
-    print(pagination_data.prev_num)
+    tokens_data = database.token.new_survey.paginate(page=page, per_page=10)
     page_data = {
         'title': 'Manage Surveys - Itinerum Control Panel',
-        'new_survey_tokens': pagination_data,
-        'new_survey_tokens_page': pagination_data.page,
-        'new_survey_tokens_pages': pagination_data.pages,
-        'new_survey_tokens_total': int(pagination_data.total)
+        'new_survey_tokens': tokens_data
     }
     return render_template('manage_surveys.index.html', **page_data)
 
@@ -58,26 +54,3 @@ def upload_survey_schema_json():
                  resource_type='NewSurveySchema',
                  errors=errors)
 
-
-@blueprint.route('/token', methods=['POST'])
-@requires_auth
-def generate_new_survey_token():
-    database.token.new_survey.create()
-    response = {
-        'recent_tokens': [],
-        'message': 'New survey sign-up token successfully created.'
-    }
-
-    # format the same as jinja2 renders the template
-    for token in database.token.new_survey.get_recent(10):
-        response['recent_tokens'].append({
-            'token': token.token,
-            'created_at': token.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            'active': str(token.active),
-            'usages': token.usages
-        })
-
-    return Success(status_code=201,
-                   headers={'Location': '/manage-surveys/token'},
-                   resource_type='NewSurveyToken',
-                   body=response)

@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container content-container">
+        <div class="row content-title">
+            <h1 class="header">Survey Sign-up Tokens</h1>
+        </div>
+
+        <div class="row">
+            <p>Token management for inviting new survey teams</p>
+        </div>
+
+        <!-- Sign-up tokens paginated table -->
+        {% include 'signup_tokens.active_tokens_table.html' %}     
+    </div>
+
+    <!-- Upload JSON schema modal -->
+    <div class="modal fade" id="upload-survey-schema-modal" tabindex="-1" role="dialog" aria-labelledby="survey-schema-modal-label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="survey-schema-modal-label">Upload JSON Schema</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="col-sm-12">
+                        <div class="survey-name-row">
+                            <label for="json-schema-survey-name">New Survey Name</label>
+                            <input type="text" id="json-schema-survey-name" class="form-control" />
+                            <div class="form-control-feedback" id="json-schema-survey-name-feedback"></div>
+                        </div>
+
+                        <p id="json-schema-help" class="form-text text-muted">
+                            Upload JSON schema to append to default hardcoded questions:
+                        </p>
+                        <label class="custom-file json-schema-file">
+                            <input type="file" id="json-schema-file-input" class="custom-file-input" />
+                            <span class="custom-file-control custom-file-name" id="json-schema-file-name" data-content="Upload schema..."></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="deploy-schema-btn">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // register new token click
+            var $table = $('#table-body');
+            $('#new-token-btn').click(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ url_for('.generate_new_survey_token') }}",
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function(data) {
+                        $('#table-body').empty();
+                        data.results.recent_tokens.forEach(function(token, idx) {
+                            var $row = $('<tr>').append(
+                                $('<th>').text(token.token),
+                                $('<td>').text(token.created_at),
+                                $('<td>').text(token.active),
+                                $('<td>').text(token.usages)
+                            );
+                            $row.appendTo($table);
+                        });
+                    }
+                });                
+            });
+        });
+    </script>
+{% endblock %}

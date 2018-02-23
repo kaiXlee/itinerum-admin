@@ -27,59 +27,8 @@
                     </button>
                 </div>
             </div>
-            <div class="col-sm-2">
-                <button class="btn btn-sm btn-success" id="new-token-btn">New Token</button>
-            </div>
         </div>
-
-        <div class="row data-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Token Hash</th>
-                        <th>Created At</th>
-                        <th>Active</th>
-                        <th>Usages</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    {% for token in new_survey_tokens.items %}
-                        <tr>
-                            <th scope="row">{{ token.token }}</th>
-                            <td>{{ token.created_at.replace(microsecond=0) }}</td>
-                            <td>{{ token.active }}</td>
-                            <td>{{ token.usages }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Tokens pagination -->
-        <nav aria-label="New survey tokens">
-            <ul class="pagination justify-content-center">
-                <li class="page-item {{'disabled' if new_survey_tokens_page == 1}}">
-                    <a class="page-link" href="?page={{new_survey_tokens.prev_num}}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-
-                {% for i in range(1, new_survey_tokens.pages + 1) %}
-                    {% if i == new_survey_tokens.page %}
-                        <li class="page-item"><a class="page-link" href="?page={{i}}"><b>{{i}}</b></a></li>
-                    {% else %}
-                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
-                    {% endif %}
-                {% endfor %}
-
-                <li class="page-item {{'disabled' if new_survey_tokens.page == new_survey_tokens.pages}}">
-                    <a class="page-link" href="?page={{new_survey_tokens.next_num}}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>    
+    </div>
 
     <!-- Upload JSON schema modal -->
     <div class="modal fade" id="upload-survey-schema-modal" tabindex="-1" role="dialog" aria-labelledby="survey-schema-modal-label">
@@ -178,28 +127,6 @@
                 var files = $('#json-schema-file-input').get(0).files;
                 fileReader.onload = function(e) { readSuccess(e.target.result) };
                 fileReader.readAsText(files[0]);
-            });
-
-            // register new token click
-            var $table = $('#table-body');
-            $('#new-token-btn').click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ url_for('.generate_new_survey_token') }}",
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function(data) {
-                        $('#table-body').empty();
-                        data.results.recent_tokens.forEach(function(token, idx) {
-                            var $row = $('<tr>').append(
-                                $('<th>').text(token.token),
-                                $('<td>').text(token.created_at),
-                                $('<td>').text(token.active),
-                                $('<td>').text(token.usages)
-                            );
-                            $row.appendTo($table);
-                        });
-                    }
-                });                
             });
         });
     </script>
