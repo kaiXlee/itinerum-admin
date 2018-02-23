@@ -72,13 +72,10 @@
                     headers: { "Authorization": "Basic foobar" }
                 })
                 .done(function(){
-                    // alert('Error!');
-                    console.log('done');
+                    console.log('Logout complete.');
                 })
                 .fail(function(){
-                    console.log('redirect-1');
                     window.location = "/logout";
-                    console.log('redirect-2');
                 });
             });
         });

@@ -24,7 +24,6 @@ def index():
     return render_template('signup_tokens.index.html', **page_data)
 
 
-
 @blueprint.route('/token', methods=['POST'])
 @requires_auth
 def generate_new_survey_token():
