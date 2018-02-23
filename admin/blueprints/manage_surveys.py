@@ -14,11 +14,17 @@ database = Database()
 
 @blueprint.route('/')
 @requires_auth
-def index():
+def index(tokens_page=1):
+    pagination_data = database.token.new_survey.paginate(page=tokens_page, per_page=10)
     page_data = {
         'title': 'Manage Surveys - Itinerum Control Panel',
-        'new_survey_tokens': database.token.new_survey.get_recent(10)
+        'new_survey_tokens': pagination_data.items,
+        'new_survey_tokens_page': pagination_data.page,
+        'new_survey_tokens_pages': pagination_data.pages,
+        'new_survey_tokens_total': int(pagination_data.total)
     }
+    print(dir(pagination_data))
+    print(page_data)
     return render_template('manage_surveys.index.html', **page_data)
 
 

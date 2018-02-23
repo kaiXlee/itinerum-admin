@@ -11,20 +11,24 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12">
-                <button class="btn btn-primary"
-                        id="deploy-schema-modal-btn"
-                        data-toggle="modal"
-                        data-target="#upload-survey-schema-modal">
-                    Deploy Survey Schema
-                </button>                
-                <button class="btn btn-secondary"
-                        id="deploy-schema-modal-btn"
-                        data-toggle="modal"
-                        data-target="#download-survey-schema-modal">
-                    Download Survey Schema
-                </button>
-                <button class="btn btn-success float-sm-right" id="new-token-btn">New Token</button>
+            <div class="col-sm-10">
+                <div class="btn-group btn-group-sm" role="group" aria-label="JSON buttons">
+                    <button class="btn btn-primary"
+                            id="deploy-schema-modal-btn"
+                            data-toggle="modal"
+                            data-target="#upload-survey-schema-modal">
+                        Deploy Survey Schema
+                    </button>                
+                    <button class="btn btn-secondary"
+                            id="deploy-schema-modal-btn"
+                            data-toggle="modal"
+                            data-target="#download-survey-schema-modal">
+                        Download Survey Schema
+                    </button>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-sm btn-success" id="new-token-btn">New Token</button>
             </div>
         </div>
 
@@ -50,6 +54,31 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Tokens pagination -->
+        <nav aria-label="New survey tokens">
+            <ul class="pagination justify-content-center">
+                <li class={{ "page-item" if new_survey_tokens_page > 1 else "page-item disabled" }}>
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                {% for i in range(1, new_survey_tokens_pages + 1) %}
+                    {% if i == new_survey_tokens_page %}
+                        <li class="page-item"><a class="page-link" href="#"><b>{{i}}</b></a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="#">{{i}}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>    
 
     <!-- Upload JSON schema modal -->
@@ -89,13 +118,15 @@
     </div>    
 
     <script type="text/javascript">
+        // GLOBALS
+        var JSONSchema;
+
         function readJSONSchema(content) {
-            var schema = JSON.parse(content);
-            console.log(schema);
+            JSONSchema = JSON.parse(content);
 
             // update Survey Name input from JSON schema
-            if (schema.surveyName) {
-                $('#json-schema-survey-name').val(schema.surveyName);
+            if (JSONSchema.surveyName) {
+                $('#json-schema-survey-name').val(JSONSchema.surveyName);
             }
         }
 
@@ -116,36 +147,38 @@
             });
 
             // schema modal: deploy survey schema to new survey
-            // $('#deploy-schema-btn').click(function() {
-            //     var readSuccess = function(content) {
-            //         var jsonContent = JSON.stringify({
-            //             schema: JSON.parse(content),
-            //             surveyName: $('#json-schema-survey-name').val()
-            //         });
+            $('#deploy-schema-btn').click(function() {
+                var readSuccess = function(content) {
+                    var jsonContent = JSON.stringify({
+                        schema: JSONSchema,
+                        // surveyName override from modal input
+                        surveyName: $('#json-schema-survey-name').val() 
+                    });
 
 
-            //         $.ajax({
-            //             type: 'POST',
-            //             url: "{{ url_for('.upload_survey_schema_json') }}",
-            //             contentType: 'application/json',
-            //             data: jsonContent,
-            //             dataType: 'json',
-            //             success: function(data) {
-            //                 $('#survey-schema-modal').modal('toggle');
-            //             },
-            //             error: function(err) {
-            //                 $('.survey-name-row').addClass('has-danger');
-            //                 $('#json-schema-survey-name').addClass('form-control-success');
-            //                 $('#json-schema-survey-name-feedback').text(err.responseJSON.errors[0]);
-            //             }
-            //         });
-            //     }
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ url_for('.upload_survey_schema_json') }}",
+                        contentType: 'application/json',
+                        data: jsonContent,
+                        dataType: 'json',
+                        success: function(data) {
+                            console.log(data);
+                            $('#survey-schema-modal').modal('toggle');
+                        },
+                        error: function(err) {
+                            $('.survey-name-row').addClass('has-danger');
+                            $('#json-schema-survey-name').addClass('form-control-success');
+                            $('#json-schema-survey-name-feedback').text(err.responseJSON.errors[0]);
+                        }
+                    });
+                }
 
-            //     var fileReader = new FileReader();
-            //     var files = $('#json-schema-file-input').get(0).files;
-            //     fileReader.onload = function(e) { readSuccess(e.target.result) };
-            //     fileReader.readAsText(files[0]);
-            // });
+                var fileReader = new FileReader();
+                var files = $('#json-schema-file-input').get(0).files;
+                fileReader.onload = function(e) { readSuccess(e.target.result) };
+                fileReader.readAsText(files[0]);
+            });
 
             // register new token click
             var $table = $('#table-body');
