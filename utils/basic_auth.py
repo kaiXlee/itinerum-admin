@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Kyle Fitzsimmons, 2018
-from flask import current_app, request
+from flask import current_app, request, Response
 from functools import wraps
 
 

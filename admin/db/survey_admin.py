@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Kyle Fitzsimmons, 2017
+# Kyle Fitzsimmons, 2017-2018
 from flask_security.utils import encrypt_password
 from sqlalchemy.exc import IntegrityError
 
@@ -152,8 +152,8 @@ class SurveyAdminActions:
                                                        .distinct(MobileCoordinate.mobile_id))
 
         new_prompts_query = PromptResponse.query.filter(db.and_(PromptResponse.survey_id == survey.id,
-                                                                PromptResponse.timestamp >= start,
-                                                                PromptResponse.timestamp <= end))
+                                                                PromptResponse.displayed_at >= start,
+                                                                PromptResponse.displayed_at <= end))
         summary = {
             'new_users': new_users_query.count(),
             'active_users': active_users_query.with_entities(MobileCoordinate.mobile_id).count(),

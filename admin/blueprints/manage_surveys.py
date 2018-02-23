@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Kyle Fitzsimmons, 2018
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 
 from admin.database import Database
 from utils.basic_auth import requires_auth

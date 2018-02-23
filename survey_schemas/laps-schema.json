@@ -1,0 +1,160 @@
+{
+    "surveyName": "LAPS",
+    "adminEmail": "laps@email.com",
+    "adminPassword": "laps",
+    "language": "fr",
+    "surveyQuestions": [{
+        "prompt": "Votre dernier diplôme est:",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "École secondaire et professionnel",
+                "Collégial et technique",
+                "Universitaire"
+            ]
+        },
+        "colName": "Diplôme"
+    }, {
+        "prompt": "Possédez-vous un permis de conduire ou un titre mensuel donnant accès au transport en commun?",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Permis de conduire",
+                "Titre mensuel de transport en commun"
+            ]
+        },
+        "colName": "Permis"
+    }, {
+        "prompt": "Avec qui habitez-vous?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Mes parents",
+                "J'habite seul",
+                "Des colocataires",
+                "Ma propre famille"
+            ]
+        },
+        "colName": "Ménage"
+    }, {
+        "prompt": "Quel énoncé décrit le mieux votre situation de vie dans votre maison:",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Je ne vis pas avec un(e) conjoint(e)",
+                "Je vis avec un(e) conjoint(e)",
+                "Je vis dans une famille intacte",
+                "Je vis dans une famille monoparentale",
+                "Je vis dans une famille recomposée",
+                "Je suis Veuf\\veuve",
+                "Autre, Précisez (texte)"
+            ]
+        },
+        "colName": "Situation familiale"
+    }, {
+        "prompt": "Combien d’adultes habitent à votre adresse?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Adultes"
+    }, {
+        "prompt": "Combien d’enfants (moins de 18 ans) habitent à votre adresse (à temps plein ou en garde partagée)?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Enfants"
+    }, {
+        "prompt": "Combien de ces personnes sont âgées -- moins de 5 ans:",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "numMoinsDe5"    
+    }, {
+        "prompt": "Combien de ces personnes sont âgées -- de 5 ans à 11 ans:",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "num5a11"    
+    }, {
+        "prompt": "Combien de ces personnes sont âgées -- de 12 ans à 18 ans:",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "num12a18"    
+    }, {
+        "prompt": "Combien de ces personnes sont âgées -- de 19 ans à 65 ans:",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "num18a65"    
+    }, {
+        "prompt": "Combien de ces personnes sont âgées -- de plus de 65 ans:",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "num65plus"    
+    }, {
+        "prompt": "Seriez-vous intéressé à participer à un entretien (environ 1h) en lien avec vos déplacements?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Oui, vous pouvez me contacter par courriel",
+                "Non"
+            ]
+        },
+        "colName": "Entretien"
+    }],
+    "surveyPrompts": [{
+        "prompt": "Quel moyen de transport avez-vous utilisé pour votre déplacement?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Voiture",
+                "À pied",
+                "Transport collectif (TC)",
+                "Vélo",
+                "Voiture + TC",
+                "Vélo + TC",
+                "Autre mode unique",
+                "Autre combinaison",
+                "Annuler / ce n’est pas une destination"
+            ]
+        },
+        "colName": "moyenDeTransport"
+    }, {
+        "prompt": "Pour quelle raison avez-vous effectué ce déplacement?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Éducation",
+                "Santé",
+                "Repas / collation / café",
+                "Reconduire / all checher un / des enfants",
+                "Reconduire / aller chercher un adulte",
+                "Magasinage / emplettes",
+                "Retourner à mon domicile",
+                "Travail",
+                "Rendez-vous d'affaires",
+                "Loisir"
+            ]
+        },
+        "colName": "raisonDeDeplacement"
+    }, {
+        "prompt": "Avez-vous utilisé des applications sur votre téléphone lors de ce déplacement?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Oui",
+                "Non"
+            ]
+        },
+        "colName": "utiliserApplications"
+    }, {
+        "prompt": "Pour quelle(s) raison(s) avez-vous utilisé des applications sur votre téléphone lors de ce déplacement? (cochez tous les choix applicables)",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Jeux et Vidéos",
+                "Sortie (restaurant, cinéma, musée, etc.)",
+                "Orientation (carte, repérage, GPS)",
+                "Message texte",
+                "Courriel",
+                "Autres"
+            ]
+        },
+        "colName": "raisonPourApplications"
+    }]
+}
