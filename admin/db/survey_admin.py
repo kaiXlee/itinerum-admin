@@ -15,7 +15,7 @@ class SurveyAdminActions:
         return [n for n, in Survey.query.with_entities(Survey.pretty_name).order_by(Survey.name).all()]
 
     def paginate(self, page=1, per_page=10):
-        return (Survey.query.order_by(Survey.created_at)
+        return (Survey.query.order_by(Survey.created_at.desc())
                             .paginate(page=page, per_page=per_page))
 
     def get_user_role(self, role):
