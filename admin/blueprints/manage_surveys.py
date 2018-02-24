@@ -51,7 +51,7 @@ def upload_survey_schema_json():
                     'name': survey.name,
                     'pretty_name': survey.pretty_name,
                     'created_at': str(survey.created_at.replace(microsecond=0)),
-                    'active': 'True' if survey.mobile_coordinates.one_or_none() else 'False'
+                    'active': 'True' if survey.mobile_coordinates.first() else 'False'
                 })
 
             return Success(status_code=201,
@@ -85,7 +85,7 @@ def delete_inactive_survey():
                 'name': survey.name,
                 'pretty_name': survey.pretty_name,
                 'created_at': str(survey.created_at.replace(microsecond=0)),
-                'active': 'True' if survey.mobile_coordinates.one_or_none() else 'False'
+                'active': 'True' if survey.mobile_coordinates.first() else 'False'
             })
 
         return Success(status_code=200,

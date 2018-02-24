@@ -173,6 +173,6 @@ class SurveyAdminActions:
 
     def get_recent_signups(self, num):
         query = (Survey.query
-                 .order_by(Survey.created_at.desc())
-                 .limit(num))
+                       .order_by(Survey.created_at.desc())
+                       .limit(num))
         return query
