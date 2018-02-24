@@ -58,6 +58,10 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            // remove the active class from previously active menu item 
+            $('.nav-item li').removeClass('active');
+            $('#nav-link-survey-signup-tokens').addClass('active');
+
             // register new token click
             var $table = $('#table-body');
             $('#new-token-btn').click(function() {

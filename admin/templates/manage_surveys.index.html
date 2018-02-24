@@ -12,7 +12,7 @@
 
         <div class="row">
             <div class="col-sm-10">
-                <div class="btn-group btn-group-sm" role="group" aria-label="JSON buttons">
+                <div class="btn-group btn-group" role="group" aria-label="JSON buttons">
                     <button class="btn btn-primary"
                             id="deploy-schema-modal-btn"
                             data-toggle="modal"
@@ -28,6 +28,8 @@
                 </div>
             </div>
         </div>
+
+        {% include 'manage_surveys.recently_registered_table.html' %}
     </div>
 
     <!-- Upload JSON schema modal -->
@@ -112,8 +114,25 @@
                         data: jsonContent,
                         dataType: 'json',
                         success: function(data) {
-                            console.log(data);
-                            $('#survey-schema-modal').modal('toggle');
+                            $('#upload-survey-schema-modal').modal('toggle');
+                            
+                            // update table with changed data
+                            var $table = $('#table-body');
+                            $table.empty();
+                            data.results.recent_signups.forEach(function(survey, idx) {
+                                var deleteButton;
+                                if (survey.active == 'False') {
+                                    deleteButton = '<button id="delete-survey-btn" class="btn btn-sm btn-danger" data-name="' + survey.name + '">X</button>'
+                                }
+
+                                var $row = $('<tr>').append(
+                                    $('<th>').text(survey.pretty_name),
+                                    $('<td>').text(survey.created_at),
+                                    $('<td>').text(survey.active),
+                                    $('<td>').html(deleteButton)
+                                );
+                                $row.appendTo($table);
+                            });                            
                         },
                         error: function(err) {
                             $('.survey-name-row').addClass('has-danger');
