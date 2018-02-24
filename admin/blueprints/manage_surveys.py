@@ -15,10 +15,10 @@ database = Database()
 @requires_auth
 def index():
     page = int(request.args.get('page', 1))
-    tokens_data = database.token.new_survey.paginate(page=page, per_page=10)
+    registered_surveys_data = database.survey_admin.paginate(page=page, per_page=10)
     page_data = {
         'title': 'Manage Surveys - Itinerum Control Panel',
-        'new_survey_tokens': tokens_data
+        'registered_surveys': registered_surveys_data
     }
     return render_template('manage_surveys.index.html', **page_data)
 
@@ -52,4 +52,23 @@ def upload_survey_schema_json():
                  headers={'Location': '/manage-surveys/schema'},
                  resource_type='NewSurveySchema',
                  errors=errors)
+
+
+@blueprint.route('/delete', methods=['DELETE'])
+@requires_auth
+def delete_inactive_survey():
+    survey_name = request.form.get('surveyName')
+    error = database.survey_admin.delete(survey_name)
+    if not error:
+        return Success(status_code=200,
+                       headers={'Location': '/manage-surveys/delete'},
+                       resource_type='NewSurveySchema',
+                       body={})
+    return Error(status_code=400,
+                 headers={'Location': '/manage-surveys/delete'},
+                 resource_type='NewSurveySchema',
+                 errors=[error])
+
+
+
 

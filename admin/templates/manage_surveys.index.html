@@ -28,6 +28,8 @@
                 </div>
             </div>
         </div>
+
+        {% include 'manage_surveys.recently_registered_table.html' %}
     </div>
 
     <!-- Upload JSON schema modal -->
@@ -112,7 +114,6 @@
                         data: jsonContent,
                         dataType: 'json',
                         success: function(data) {
-                            console.log(data);
                             $('#survey-schema-modal').modal('toggle');
                         },
                         error: function(err) {
