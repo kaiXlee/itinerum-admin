@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Kyle Fitzsimmons, 2018
-from flask import Blueprint, render_template, request
+from flask import Blueprint, jsonify, render_template, request
 
 from admin.database import Database
 from utils.basic_auth import requires_auth
@@ -37,7 +37,7 @@ def generate_new_survey_token():
     for token in database.token.new_survey.get_recent(10):
         response['recent_tokens'].append({
             'token': token.token,
-            'created_at': token.created_at,
+            'created_at': str(token.created_at.replace(microsecond=0)),
             'active': str(token.active),
             'usages': token.usages
         })
