@@ -55,7 +55,7 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#delete-survey-btn').click(function() {
+            $('body').on('click', 'button#delete-survey-btn', function() {
                 var jsonContent = {
                     surveyName: $(this).attr('data-name')
                 };
@@ -66,7 +66,18 @@
                     contentType: 'application/x-www-form-urlencoded',
                     data: jsonContent,
                     success: function(data) {
-                        location.reload();
+                        var $table = $('#table-body');
+                        $table.empty();
+
+                        data.results.recent_signups.forEach(function(survey, idx) {
+                            var $row = $('<tr>').append(
+                                $('<th>').text(survey.pretty_name),
+                                $('<td>').text(survey.created_at),
+                                $('<td>').text(survey.active),
+                                $('<td>').html('<button id="delete-survey-btn" class="btn btn-sm btn-danger" data-name="' + survey.name + '">X</button>')
+                            );
+                            $row.appendTo($table);
+                        });                                  
                     },
                     error: function(err) {
                         console.log('survey failed to delete.');

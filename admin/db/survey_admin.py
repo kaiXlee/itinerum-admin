@@ -170,3 +170,9 @@ class SurveyAdminActions:
         survey = Survey.query.filter_by(name=survey_name.lower()).one_or_none()
         db.session.delete(survey)
         db.session.commit()
+
+    def get_recent_signups(self, num):
+        query = (Survey.query
+                 .order_by(Survey.created_at.desc())
+                 .limit(num))
+        return query
