@@ -14,8 +14,9 @@ class SurveyAdminActions:
     def names(self):
         return [n for n, in Survey.query.with_entities(Survey.pretty_name).order_by(Survey.name).all()]
 
-    def paginate_registrations(self):
-        pass
+    def paginate(self, page=1, per_page=10):
+        return (Survey.query.order_by(Survey.created_at.desc())
+                            .paginate(page=page, per_page=per_page))
 
     def get_user_role(self, role):
         return user_datastore.find_or_create_role(name=role)
@@ -164,3 +165,14 @@ class SurveyAdminActions:
             'num_prompts': new_prompts_query.count()
         }
         return summary
+
+    def delete(self, survey_name):
+        survey = Survey.query.filter_by(name=survey_name.lower()).one_or_none()
+        db.session.delete(survey)
+        db.session.commit()
+
+    def get_recent_signups(self, num):
+        query = (Survey.query
+                       .order_by(Survey.created_at.desc())
+                       .limit(num))
+        return query
