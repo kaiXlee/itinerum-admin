@@ -2,18 +2,6 @@
 
 {% block content %}
     <div class="container content-container">
-        <!--
-        <div class="row">
-            <div class="col-4 bbox-type-select">
-                <label for="bbox-type-select">Survey</label>
-                <select class="form-control" name="bbox-type-select">
-                    <option value="inclusive">Inclusive</option>
-                    <option value="exclusive">Exclusive</option>
-                </select>
-            </div>
-        </div>
-        -->
-
         <div class="row">
             <div class="col-6">
                 <button class="btn btn-secondary activity-map-button" id="reset-map">
@@ -70,7 +58,7 @@
             ALL_POINTS_LAYER_CACHE;
 
         function loadRecentActivity(map) {
-            var mapDataUrl = window.location.href + '/data',
+            var mapDataUrl = window.location.href + 'data',
                 params = {};
 
             $.post(mapDataUrl, params, function(geojson, textStatus, jqXHR) {
@@ -121,7 +109,7 @@
         }
 
         function loadMobileIdActivity(map, mobileId) {
-            var uuidDataUrl = window.location.href + '/data/' + mobileId,
+            var uuidDataUrl = window.location.href + 'data/' + mobileId,
                 params = {};
 
             $.post(uuidDataUrl, params, function(geojson, textStatus, jqXHR) {

@@ -1,3 +1,7 @@
+.btn {
+    cursor: pointer;
+}
+
 .content-container {
     margin-top: 2rem;
 }

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="container content-container">
         <div class="row content-title">
-            <h1 class="header">New Survey</h1>
+            <h1 class="header">Manage Surveys</h1>
         </div>
 
         <div class="row">
@@ -11,38 +11,27 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12">
-                <button class="btn btn-primary" id="deploy-schema-modal-btn" data-toggle="modal" data-target="#survey-schema-modal">Deploy Survey Schema</button>
-                <button class="btn btn-success float-sm-right" id="new-token-btn">New Token</button>
+            <div class="col-sm-10">
+                <div class="btn-group btn-group-sm" role="group" aria-label="JSON buttons">
+                    <button class="btn btn-primary"
+                            id="deploy-schema-modal-btn"
+                            data-toggle="modal"
+                            data-target="#upload-survey-schema-modal">
+                        Deploy Survey Schema
+                    </button>                
+                    <button class="btn btn-secondary"
+                            id="deploy-schema-modal-btn"
+                            data-toggle="modal"
+                            data-target="#download-survey-schema-modal">
+                        Download Survey Schema
+                    </button>
+                </div>
             </div>
         </div>
-
-        <div class="row data-table">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Token Hash</th>
-                        <th>Created At</th>
-                        <th>Active</th>
-                        <th>Usages</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    {% for token in new_survey_tokens %}
-                        <tr>
-                            <th scope="row">{{ token.token }}</th>
-                            <td>{{ token.created_at.replace(microsecond=0) }}</td>
-                            <td>{{ token.active }}</td>
-                            <td>{{ token.usages }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>    
+    </div>
 
     <!-- Upload JSON schema modal -->
-    <div class="modal fade" id="survey-schema-modal" tabindex="-1" role="dialog" aria-labelledby="survey-schema-modal-label">
+    <div class="modal fade" id="upload-survey-schema-modal" tabindex="-1" role="dialog" aria-labelledby="survey-schema-modal-label">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -78,6 +67,18 @@
     </div>    
 
     <script type="text/javascript">
+        // GLOBALS
+        var JSONSchema;
+
+        function readJSONSchema(content) {
+            JSONSchema = JSON.parse(content);
+
+            // update Survey Name input from JSON schema
+            if (JSONSchema.surveyName) {
+                $('#json-schema-survey-name').val(JSONSchema.surveyName);
+            }
+        }
+
         $(document).ready(function () {
             // remove the active class from previously active menu item 
             $('.nav-item li').removeClass('active');
@@ -87,15 +88,22 @@
             $('#json-schema-file-input').change(function(e) {
                 var fileName = e.target.value.split('\\').pop();
                 $('#json-schema-file-name').attr('data-content', fileName);
+                
+                var fileReader = new FileReader();
+                var files = $('#json-schema-file-input').get(0).files;
+                fileReader.onload = function(e) { readJSONSchema(e.target.result) };
+                fileReader.readAsText(files[0]);                
             });
 
             // schema modal: deploy survey schema to new survey
             $('#deploy-schema-btn').click(function() {
                 var readSuccess = function(content) {
                     var jsonContent = JSON.stringify({
-                        schema: JSON.parse(content),
-                        surveyName: $('#json-schema-survey-name').val()
+                        schema: JSONSchema,
+                        // surveyName override from modal input
+                        surveyName: $('#json-schema-survey-name').val() 
                     });
+
 
                     $.ajax({
                         type: 'POST',
@@ -104,6 +112,7 @@
                         data: jsonContent,
                         dataType: 'json',
                         success: function(data) {
+                            console.log(data);
                             $('#survey-schema-modal').modal('toggle');
                         },
                         error: function(err) {
@@ -118,28 +127,6 @@
                 var files = $('#json-schema-file-input').get(0).files;
                 fileReader.onload = function(e) { readSuccess(e.target.result) };
                 fileReader.readAsText(files[0]);
-            });
-
-            // register new token click
-            var $table = $('#table-body');
-            $('#new-token-btn').click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ url_for('.generate_new_survey_token') }}",
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function(data) {
-                        $('#table-body').empty();
-                        data.results.recent_tokens.forEach(function(token, idx) {
-                            var $row = $('<tr>').append(
-                                $('<th>').text(token.token),
-                                $('<td>').text(token.created_at),
-                                $('<td>').text(token.active),
-                                $('<td>').text(token.usages)
-                            );
-                            $row.appendTo($table);
-                        });
-                    }
-                });                
             });
         });
     </script>
