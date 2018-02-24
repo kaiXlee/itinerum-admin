@@ -1,0 +1,101 @@
+{
+    "surveyName": "mtlte",
+    "adminEmail": "yannickroy@ville.montreal.qc.ca",
+    "adminPassword": "mtltrajet",
+    "language": "en",
+    "surveyQuestions": [{
+        "prompt": "Do you have a driver's licence?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes",
+                "No"
+            ]
+        },
+        "colName": "Licence"
+    }, {
+        "prompt": "Do you have a subscription to any of the following services?",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Monthly transit pass",
+                "Car sharing (Communauto, car2go)",
+                "Shared bike service (Bixi)",
+                "Other",
+                "No subscription"
+            ]
+        },
+        "colName": "Subscription"
+    }, {
+        "prompt": "Who do you live with?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "My parents",
+                "By myself",
+                "Roommates",
+                "My own family"
+            ]
+        },
+        "colName": "Household"
+    }, {
+        "prompt": "How many people live in your home?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "People"
+    }, {
+        "prompt": "How many are under 16?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "MembersUnder16"
+    }, {
+        "prompt": "How many cars are in your home?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Cars"
+    },
+    {
+        "prompt": "Would you like to be kept up to date on the raffle results and news about the MTL Trajet study?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes",
+                "No"
+            ] 
+        },
+        "colName": "Survey"
+    }],
+    "surveyPrompts": [{
+        "prompt": "Why did you make this trip?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Return home",
+                "Work / Business meeting",
+                "Shopping / Errands",
+                "Leisure",
+                "Meal / Snack / Coffee",
+                "Education",
+                "Pick-up / Drop-off someone",
+                "Health",
+                "Other"
+            ]
+        },
+        "colName": "purpose"
+    }, {
+        "prompt": "How did you get here?",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Car / Motorcycle",
+                "Public transportation",
+                "On foot",
+                "Bicycle",
+                "Taxi",
+                "Car sharing",
+                "Other"
+            ]
+        },
+        "colName": "mode"
+    }]
+}

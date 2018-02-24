@@ -1,0 +1,100 @@
+{
+    "adminEmail": "olivier.audet@ville.montreal.qc.ca",
+    "adminPassword": "mtltrajet",
+    "language": "fr",
+    "surveyQuestions": [{
+        "prompt": "Possédez-vous un permis de conduire?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Oui",
+                "Non"
+            ]
+        },
+        "colName": "Permis"
+    }, {
+        "prompt": "Possédez-vous un abonnement à l'un des services suivants?",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Titre mensuel transport collectif",
+                "Service d'autopartage (Communauto, car2go)",
+                "Service de vélo libre-service (Bixi)",
+                "Autre",
+                "Aucun abonnement"
+            ]
+        },
+        "colName": "Abonnement"
+    }, {
+        "prompt": "Avec qui habitez-vous?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Mes parents",
+                "J'habite seul",
+                "Des colocataires",
+                "Ma propre famille"
+            ]
+        },
+        "colName": "Ménage"
+    }, {
+        "prompt": "Combien de personnes habitent à votre domicile de façon permanente?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Personnes"
+    }, {
+        "prompt": "Combien de personnes sont âgeés de moins de 16 ans?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "numMoinsDe16"
+    }, {
+        "prompt": "Combien de véhicules possèdent l'ensemble des personnes qui habitent à votre adresse? (automobile, camion, fourgonnette ou moto)",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "numVoitures"
+    },
+    {
+        "prompt": "Souhaitez-vous être tenu au courant des résultats du concours et des nouvelles de l’étude MTL Trajet?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Oui",
+                "Non"
+            ] 
+        },
+        "colName": "Infolettre"
+    }],
+    "surveyPrompts": [{
+        "prompt": "Quel était le but de ce déplacement?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Retourner à mon domicile",
+                "Travail / Rendez-vous d'affaires",
+                "Magasinage / emplettes",
+                "Loisir",
+                "Repas / collation / café",
+                "Éducation",
+                "Reconduire / aller checher une personne",
+                "Santé",
+                "Autre"
+            ]
+        },
+        "colName": "raisonDeDeplacement"
+    }, {
+        "prompt": "Quel(s) moyen(s) de transport avez-vous utilisé pour votre déplacement?",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Voiture / Moto",
+                "Transport collectif",
+                "À pied",
+                "Vélo",
+                "Taxi",
+                "Autopartage",
+                "Autre"
+            ]
+        },
+        "colName": "moyenDeTransport"
+    }]
+}

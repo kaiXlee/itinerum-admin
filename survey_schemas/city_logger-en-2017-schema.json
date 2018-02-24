@@ -1,0 +1,234 @@
+{
+    "adminEmail": "harcding@hotmail.com",
+    "adminPassword": "citylogger",
+    "language": "en",
+    "surveyQuestions": [{
+        "prompt": "surveyVersion (hidden)",
+        "id": 99,
+        "fields": {"choices": [1, 2]},
+        "colName": "surveyVersion"
+    }, {
+        "prompt": "How did you hear about City Logger?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Transportation Tomorrow 2016 email",
+                "Advocacy organization",
+                "Media (Star, CBC, TVO, Metro, etc.)",
+                "Blog",
+                "Flyer at event",
+                "Mailed invitation / recruited at home",
+                "Ad on social media",
+                "Household invitation code",
+                "Word of mouth",
+                "Other (specify)"
+            ]
+        },
+        "colName": "Hear about app"
+    }, {
+        "prompt": "What is the code provided for your household? If you don’t have a code, return to previous page and select another option.",
+        "id": 5,
+        "fields": {"text": ""},
+        "colName": "Household code"
+    }, {
+        "prompt": "What type of dwelling do you live in?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "House",
+                "Apartment",
+                "Townhouse",
+                "Other",
+                "I don't know"
+            ]
+        },
+        "colName": "Dwelling type"
+    }, {
+        "prompt": "Do you own or rent your home?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Own",
+                "Rent"
+            ]
+        },
+        "colName": "Tenancy"
+    }, {
+        "prompt": "How would you characterize your occupation?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "General Office/Clerical",
+                "Manufacturing/Construction/Trades",
+                "Professional/Management/Technical",
+                "Retail Sales and Service"
+            ]
+        },
+        "colName": "Occupation type"
+    }, {
+        "prompt": "Is there free parking at your usual place of work?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes",
+                "No",
+                "No usual place of work"
+            ]
+        },
+        "colName": "Free parking"
+    }, {
+        "prompt": "How many days per week do you typically work from home instead of travelling to the office or work site?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Frequency telecommute"
+    }, {
+        "prompt": "Do you have a full driver's license?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes",
+                "No"
+            ]
+        },
+        "colName": "Driver's license status"
+    }, {
+        "prompt": "Are you or another member of your household members of a carshare (ZipCar, Enterprise Carshare) or bikeshare (Toronto BikeShare, Hamilton Sobi, Dropbike) program? (check all that apply)",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Carshare member (personally)",
+                "Carshare member (other household member)",
+                "Bikeshare member (personally)",
+                "Bikeshare member (other household member)",
+                "None of the above"
+            ]
+        },
+        "colName": "Shared mobility"
+    }, {
+        "prompt": "Do you have a ride hailing app (Uber) installed on your smartphone?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes",
+                "No"
+            ]
+        },
+        "colName": "Ridehailing"
+    }, {
+        "prompt": "Do you currently have a MONTHLY or ANNUAL transit pass? (check all that apply)",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "GO Transit Pass",
+                "Metropass (monthly local transit pass)",
+                "Combination or Dual Pass",
+                "Other agency pass",
+                "Do not own transit pass"
+            ]
+        },
+        "colName": "Ownership of monthly transit pass"
+    }, {
+        "prompt": "Do you own a Presto card?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes, with fares loaded or autofill",
+                "Yes, but with no fares loaded or autofill",
+                "No"
+            ]
+        },
+        "colName": "Presto owner"
+    }, {
+        "prompt": "How many people live in your household? (including yourself)",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Number household members"
+    }, {
+        "prompt": "How many children younger than 16 live in your household? (including yourself)",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Nb children"
+    }, {
+        "prompt": "How many full-time workers live in your household? (including yourself)",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Nb FT workers"
+    }, {
+        "prompt": "How many part-time workers live in your household? (including yourself)",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Nb PT workers"
+    }, {
+        "prompt": "How many people in your household have a G2 (or equivalent) driver's license? (do not include G1 or learner's permit)",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Nb members with full license"
+    }, {
+        "prompt": "How many vehicles does your household have available for personal use?",
+        "id": 3,
+        "fields": {"number": ""},
+        "colName": "Nb hh vehicles"
+    }, {
+        "prompt": "What is your pre-tax household income? (not mandatory)",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "$0 to $14,999",
+                "$15,000 to $39,999",
+                "$40,000 to $59,999",
+                "$60,000 to $99,999",
+                "$100,000 to 124,999",
+                "$125,000 and above",
+                "I decline to answer/I don't know"
+            ]
+        },
+        "colName": "Household income"
+    }, {
+        "prompt": "Finally, do you think another member of your household might be interested in contributing to the City Logger project?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Yes, show me the code",
+                "Yes, show and email the code",
+                "No thanks"
+            ]
+        },
+        "colName": "Invite other household member"
+    }],
+    "surveyPrompts": [{
+        "prompt": "What was your purpose for making this trip?",
+        "id": 1,
+        "fields": {
+            "choices": [
+                "Home",
+                "Work / Work-related",
+                "School / Education",
+                "Shopping and errands",
+                "Restaurant, bar, coffee shop",
+                "Services",
+                "Health and personal care",
+                "Visiting friends or family",
+                "Recreation, sports, leisure, arts",
+                "Worship, religion",
+                "Drop someone off",
+                "Pick someone up",
+                "Other"
+            ]
+        },
+        "colName": "purpose"
+    }, {
+        "prompt": "How did you make this trip?",
+        "id": 2,
+        "fields": {
+            "choices": [
+                "Walk (entire trip)",
+                "Bicycle",
+                "Transit",
+                "Car (private, shared, taxi)",
+                "Intercity (coach, train, plane)",
+                "Other"
+            ]
+        },
+        "colName": "mode"
+    }]
+}

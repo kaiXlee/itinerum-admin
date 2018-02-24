@@ -30,6 +30,10 @@ class NewSurveyTokenActions:
                  .limit(num))
         return query
 
+    def paginate(self, page=0, per_page=10):
+        return (NewSurveyToken.query.order_by(NewSurveyToken.created_at.desc())
+                                    .paginate(page, per_page))
+
     def create(self):
         active_token = self.get_active()
         if active_token:

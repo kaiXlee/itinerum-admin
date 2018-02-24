@@ -18,6 +18,8 @@ class Config(object):
     APP_HOST = '0.0.0.0'
     APP_PORT = int(os.environ.get('IT_ADMIN_PORT', 9002))
     SECRET_KEY = os.environ.get('IT_SECRET_KEY', 'ChangeMe')
+    SECURITY_PASSWORD_SALT = os.environ.get('IT_PASSWORD_SALT', 'ChangeMe')
+    SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
