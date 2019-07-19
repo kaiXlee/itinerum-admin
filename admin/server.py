@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 # Kyle Fitzsimmons, 2017-2018
 from flask import Flask, jsonify, make_response
-from flask_migrate import Migrate
 from flask_security import Security
 import logging
 from raven.contrib.flask import Sentry
@@ -42,9 +41,6 @@ def create_app(testing=False):
     app.config.from_object(cfg)
     Security(app, user_datastore)
     db.init_app(app)
-
-    # Connect Alembic with Flask-Migrate =======================================
-    Migrate(app, db)
 
     # Connect Sentry.io error reporting ========================================
     if app.config['CONF'] == 'production':
