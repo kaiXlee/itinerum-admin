@@ -19,8 +19,7 @@ The most important guideline is the `master` branch should always contain a work
 ## Getting Started
 
 ### Base Requirements
-
-- Python 2.7
+- Python 3.6
 - PostgreSQL 10
 
 ### Cloning the Project
@@ -41,26 +40,17 @@ $ (admin) pip install -r requirements.txt
 
 ##### Setup
 
-First, create the development PostgreSQL database named `itinerum_dev`. The database schemas are handled by Alembic via flask-migrate with its configuration found in the `migrations` directory.
+First, create the development PostgreSQL database named `itinerum_dev`. The database migrations are perfomed manually using the the incremented .sql files within the migrations directory. Connect to the development database with `psql` as follows:
 
-_On the first run only,_ initialize the migrations directory:
-
-```bash
-$ (admin) python manage.py db init
-```
-
-For all following changes, create and apply the migration:
 
 ```bash
-$ (admin) python manage.py db migrate
-$ (admin) python manage.py db upgrade
+$ psql itinerum_dev
+# \i migrations\up\1-itinerum-database.sql
+  ...
+# \i migrations\up\n-itinerum-database.sql
 ```
 
-##### Changes
-
-When the database schema is updated, a new migration version should generated and run from this local repository. The updated `schema.py` should be then copied to this repository and the changes migrated to the destination database.
-
-Look at `config.py` to understand which environment variables will need to be set and configure these for your environment.
+For any modifications to the database, create an .sql `up` and `down` migration within the `./migrations` directory and apply like above.
 
 ### Development
 
