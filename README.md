@@ -42,7 +42,6 @@ $ (admin) pip install -r requirements.txt
 
 First, create the development PostgreSQL database named `itinerum_dev`. The database migrations are perfomed manually using the the incremented .sql files within the migrations directory. Connect to the development database with `psql` as follows:
 
-
 ```bash
 $ psql itinerum_dev
 # \i migrations\up\1-itinerum-database.sql
