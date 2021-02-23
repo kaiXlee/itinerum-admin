@@ -136,7 +136,7 @@ CREATE TABLE statistics_surveys (
 CREATE TABLE survey_question_choices (
     id           SERIAL PRIMARY KEY,
     question_id  INTEGER NOT NULL,
-    choice_num   INTEGER NOT NULL,
+    choice_num   INTEGER,
     choice_text  VARCHAR(500),
     choice_field VARCHAR(16)
 );
@@ -147,7 +147,7 @@ CREATE TABLE survey_questions (
     survey_id       INTEGER NOT NULL,
     question_num    INTEGER NOT NULL,
     question_type   INTEGER NOT NULL,
-    quetion_label   VARCHAR(100),
+    question_label   VARCHAR(100),
     question_text   VARCHAR(500),
     answer_required BOOLEAN
 );
